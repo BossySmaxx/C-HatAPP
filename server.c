@@ -12,24 +12,26 @@ void* Send(void *cli_socket_ptr)
 	int *cli_socket_ptr_Temp = (int *)cli_socket_ptr;
 	int cli_socket = *cli_socket_ptr_Temp;
 
+	printf("| Enter MSG : ");
 	while(1)
 	{
+		printf("|");
 		bzero(buff,256);
-		printf("Enter MSG : ");
 		gets(buff);
 		int msg_len = 0,nBytes = 0,i = 0;
 		while(buff[i++] != NULL)
 		{
 			msg_len++;
-			//i++;
 		}
-		buff[++msg_len] = '\n';
-		msg_len++;
+
+		buff[msg_len++] = '\n';
+		//msg_len++;
 		nBytes = write(cli_socket,buff,msg_len);
-		printf("%40d bytes sent with MSG_LEN : %d\n",nBytes,msg_len);
+		printf("");
+		//printf("%70d bytes sent with MSG_LEN : %d\n",nBytes,msg_len);
 		if(nBytes < 2)
 		{
-			printf("Disconnecting client\nShutting Down Connection\n");
+		printf("|           XXXXXX       Disconnecting client__Shutting Down Connection        XXXXXXX         |\n");
 			shutdown(cli_socket,2);
 			break;
 		}
@@ -38,6 +40,13 @@ void* Send(void *cli_socket_ptr)
 
 int main()
 {
+	system("figlet C-Hat_App");
+printf("  ____	    _   _       _          _          	   	\n");
+printf(" / ___|    | | | | __ _| |_       / \   _ __  _ __  	\n");
+printf("| |   _____| |_| |/ _` | __|     / _ \ | '_ \| '_ \ 	\n");
+printf("| |__|_____|  _  | (_| | |_     / ___ \| |_) | |_) |	\n");
+printf(" \____|    |_| |_|\__,_|\__|___/_/   \_\ .__/| .__/ 	\n");
+printf("                          |_____|      |_|   |_| 	\n");
 	struct sockaddr_in serv_addr,cli_addr;
 	int serv_socket,cli_socket,cli_len = sizeof(cli_addr);
 	char buff[256];
@@ -77,24 +86,35 @@ int main()
 		pthread_attr_t attr;
 		pthread_attr_init(&attr);
 		pthread_create(&sendThread,&attr,Send,&cli_socket);
-
+		printf("+--------------------------------------------------------------------------------------------------+\n");
+		printf("|Your__Hangs								Client__Replies            |\n");
 		while(1)
 		{
 			bzero(buff,256);
+			//int msl_len = 0,i = 0;
 			int nBytes = read(cli_socket,buff,sizeof(buff));
 
 			if(nBytes < 2)
 			{
-				printf("Client Disconnecting\nShutting Down Client\n");
+		printf("|           XXXXXXX           Client Disconnecting__Shutting Down             XXXXXXXX             |\n");
+		printf("+--------------------------------------------------------------------------------------------------+\n");
 				break;
 				shutdown(cli_socket,2);
 			}
 			else
 			{
-				printf("Client_MSG : %s\n",buff);
+				char null[] = "";
+				printf("|\n|%72s",null);
+				for(int i = 0;i < nBytes - 1;i++)
+				{
+					printf("%c",buff[i]);
+				}
+				printf("|\n----------------------->");
+				//printf("|%s : CLien_MSG|\n",buff);
 			}
 		}
 		pthread_join(sendThread,NULL);
 	}
 	return 0;
 }
+
